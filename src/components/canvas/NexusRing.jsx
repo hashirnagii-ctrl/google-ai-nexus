@@ -11,16 +11,20 @@ export function NexusRing({ activeTool }) {
   const [rx, ry, rz] = activeTool?.rotation ?? [0.5, 0.5, 0];
 
   useFrame((state, delta) => {
+    // Clamp delta so background-tab pauses or frame hitches can't cause huge rotation jumps
+    const dt = Math.min(delta, 1 / 30);
+    // Framerate-independent damping toward the target orientation
+    const damp = 1 - Math.exp(-3 * dt);
     if (groupRef.current) {
-      groupRef.current.rotation.x += (rx * 0.3 - groupRef.current.rotation.x) * 0.05;
-      groupRef.current.rotation.z += (rz * 0.3 - groupRef.current.rotation.z) * 0.05;
-      groupRef.current.rotation.y += delta * 0.15 + (ry * 0.001);
+      groupRef.current.rotation.x += (rx * 0.3 - groupRef.current.rotation.x) * damp;
+      groupRef.current.rotation.z += (rz * 0.3 - groupRef.current.rotation.z) * damp;
+      groupRef.current.rotation.y += dt * (0.15 + ry * 0.06);
     }
     if (torusRef.current) {
-      torusRef.current.rotation.x += delta * 0.2;
+      torusRef.current.rotation.x += dt * 0.2;
     }
     if (innerRef.current) {
-      innerRef.current.rotation.y -= delta * 0.4;
+      innerRef.current.rotation.y -= dt * 0.4;
       const pulse = 1 + Math.sin(state.clock.elapsedTime * 2) * 0.04;
       innerRef.current.scale.setScalar(pulse);
     }
