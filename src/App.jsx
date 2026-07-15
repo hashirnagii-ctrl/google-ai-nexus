@@ -129,7 +129,7 @@ export default function App() {
               ? activeTool
               : activeTab === 'history'
               ? { color: '#4285F4', rotation: [0.8, -0.8, 0.4] }
-              : { color: '#f43f5e', rotation: [isPlaying ? Date.now() * 0.0005 : 0.2, 1.5, 0.8] }
+              : { color: '#f43f5e', rotation: [isPlaying ? Math.sin(Date.now() * 0.0005) : 0.2, 1.5, 0.8] }
           } />
           <OrbitControls enableZoom={false} enablePan={false} maxPolarAngle={Math.PI / 2} minPolarAngle={Math.PI / 2} />
           <EffectComposer>
