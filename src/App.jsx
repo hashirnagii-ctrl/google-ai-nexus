@@ -5,11 +5,12 @@ import { EffectComposer, Bloom } from '@react-three/postprocessing';
 import { motion, AnimatePresence } from 'framer-motion';
 import { googleAiData, googleAiHistory } from './data/googleAiData';
 import { NexusRing } from './components/canvas/NexusRing';
-import { Check, X, ArrowRight, Zap, History, LayoutDashboard, Boxes } from 'lucide-react';
+import { Check, X, ArrowRight, Zap, History, LayoutDashboard, Boxes, Store } from 'lucide-react';
 import { ProductShowcase } from './components/showcase/ProductShowcase';
+import NexusStore from './components/store/NexusStore';
 
 export default function App() {
-  const [activeTab, setActiveTab] = useState('fleet'); // 'fleet' | 'history' | 'showcase'
+  const [activeTab, setActiveTab] = useState('fleet'); // 'fleet' | 'history' | 'showcase' | 'store'
   const [activeIdx, setActiveIdx] = useState(0);
   const [historyIdx, setHistoryIdx] = useState(0);
 
@@ -43,7 +44,7 @@ export default function App() {
         {/* SIGNATURE */}
         <div className="text-center">
           <h1 className="font-mono text-[11px] sm:text-xs font-black tracking-[0.35em] text-white/90 uppercase">
-            CODED BY HASHIR NAGI
+            CODED AND DESIGNED BY HASHIR NAGI
           </h1>
         </div>
 
@@ -74,7 +75,7 @@ export default function App() {
 
       {/* 4. CONTENT INTERFACE */}
       <main className="relative z-20 w-full h-full flex flex-col md:flex-row justify-end items-center px-6 md:px-16 pt-24 pb-12">
-        <div className={`h-full flex flex-col justify-center gap-6 transition-all duration-500 ${activeTab === 'showcase' ? 'w-full' : 'w-full md:w-[42vw]'}`}>
+        <div className={`h-full flex flex-col justify-center gap-6 transition-all duration-500 ${activeTab === 'showcase' || activeTab === 'store' ? 'w-full' : 'w-full md:w-[42vw]'}`}>
           
           {/* TAB CONTROLS */}
           <div className="flex border-b border-white/10 pb-1">
@@ -114,10 +115,22 @@ export default function App() {
                 <motion.div layoutId="tabUnderline" className="absolute bottom-0 left-0 right-0 h-[2px] bg-white" />
               )}
             </button>
+            <button
+              onClick={() => setActiveTab('store')}
+              className={`flex items-center gap-2 pb-3 px-4 font-mono text-xs tracking-widest uppercase transition-all duration-300 relative ${
+                activeTab === 'store' ? 'text-white font-bold' : 'text-gray-500 hover:text-gray-300'
+              }`}
+            >
+              <Store className="w-3.5 h-3.5" />
+              <span>Hardware Store</span>
+              {activeTab === 'store' && (
+                <motion.div layoutId="tabUnderline" className="absolute bottom-0 left-0 right-0 h-[2px] bg-white" />
+              )}
+            </button>
           </div>
 
           {/* DYNAMIC CARD CONTENT */}
-          <div className={`flex flex-col justify-between ${activeTab === 'showcase' ? 'flex-1 min-h-0' : 'min-h-[460px]'}`}>
+          <div className={`flex flex-col justify-between ${activeTab === 'showcase' || activeTab === 'store' ? 'flex-1 min-h-0' : 'min-h-[460px]'}`}>
             <AnimatePresence mode="wait">
               {activeTab === 'fleet' ? (
                 <motion.div
@@ -240,7 +253,7 @@ export default function App() {
                     History curated by Hashir Nagi
                   </div>
                 </motion.div>
-              ) : (
+              ) : activeTab === 'showcase' ? (
                 <motion.div
                   key="showcase-tab"
                   initial={{ opacity: 0, y: 30, filter: 'blur(8px)' }}
@@ -251,11 +264,22 @@ export default function App() {
                 >
                   <ProductShowcase />
                 </motion.div>
+              ) : (
+                <motion.div
+                  key="store-tab"
+                  initial={{ opacity: 0, y: 30, filter: 'blur(8px)' }}
+                  animate={{ opacity: 1, y: 0, filter: 'blur(0px)' }}
+                  exit={{ opacity: 0, y: -30, filter: 'blur(8px)' }}
+                  transition={{ duration: 0.4, ease: [0.16, 1, 0.3, 1] }}
+                  className="flex-1 min-h-0 overflow-hidden rounded-3xl border border-white/10 shadow-[0_20px_50px_rgba(0,0,0,0.5)]"
+                >
+                  <NexusStore />
+                </motion.div>
               )}
             </AnimatePresence>
 
             {/* ACTION FOOTER BUTTONS */}
-            {activeTab !== 'showcase' && (
+            {activeTab !== 'showcase' && activeTab !== 'store' && (
             <div className="flex justify-between items-center mt-6">
               <span className="font-mono text-[11px] text-gray-600">
                 {activeTab === 'fleet' ? (
