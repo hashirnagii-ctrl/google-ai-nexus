@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { Canvas, useFrame } from '@react-three/fiber';
+import { Environment } from '@react-three/drei';
 import { motion, AnimatePresence } from 'framer-motion';
 import { showcaseProducts } from '../../data/showcaseData';
 import { showcaseModelById } from './ShowcaseModels';
@@ -23,6 +24,7 @@ function ModelStage({ productId, autoRotate, draggingRef, rotationRef }) {
 
   return (
     <>
+      <Environment preset="city" />
       <ambientLight intensity={0.7} />
       <directionalLight
         position={[5, 8, 5]}
